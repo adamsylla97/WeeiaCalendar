@@ -1,0 +1,24 @@
+Intrukcja obslugi:
+1) Uruchamiamy aplikacje za pomoca klasy DemoApplication.
+2) Po uruchomieniu projektu mozemy za pomoca przegladarki dostac sie do endpointa.
+
+Zapytanie:
+localhost:8080/weeiaCalendar/{value}
+
+Parametry
+value - przekazany string to nazwa miesiaca z ktorego otrzymamy wydarzenia
+Dostepne opcje:
+-november
+-december
+
+W odpowiedzi otrzymamy plik ics zawierajacy wydarzenia pobrane z kalendarza dostepnego na glownej stronie WEEIA
+
+Przykladowe zapytania:
+
+http://localhost:8080/weeiaCalendar/november
+Odpowiedz:
+Plik ics zawierajacy wydarzenia z listopada z kalendarza dostepnego na stronie glownej WEEIA
+
+http://localhost:8080/weeiaCalendar/december
+Odpowiedz:
+Plik ics zawierajacy wydarzenia z grudnia z kalendarza dostepnego na stronie glownej WEEIA
