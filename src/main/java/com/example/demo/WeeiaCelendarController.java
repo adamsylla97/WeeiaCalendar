@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 
 @RestController
@@ -32,10 +34,15 @@ public class WeeiaCelendarController {
 
         List<WeeiaEvent> novemberEvents = getWeeiaEvents(websiteContentNovember);
 
+        LocalDate actualDate = LocalDate.now();
+        Month month = actualDate.getMonth();
+
+
+
         for(WeeiaEvent wEvent: novemberEvents){
             VEvent event = new VEvent();
             event.setSummary(wEvent.getEventName());
-            Date eventDate = new GregorianCalendar(2019,Calendar.NOVEMBER, Integer.valueOf(wEvent.getEventDay())).getTime();
+            Date eventDate = new GregorianCalendar(actualDate.getYear(),month.getValue()-1, Integer.valueOf(wEvent.getEventDay())).getTime();
             event.setDateStart(eventDate);
             event.setDateEnd(eventDate);
             novemberCalendar.addEvent(event);
@@ -57,12 +64,15 @@ public class WeeiaCelendarController {
         String december = "http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=2019&miesiac=12&lang=1";
         String websiteContentDecember = getWebsiteHTML(december);
 
+        LocalDate actualDate = LocalDate.now();
+        Month month = actualDate.getMonth();
+
         List<WeeiaEvent> decemberEvents = getWeeiaEvents(websiteContentDecember);
 
         for(WeeiaEvent wEvent: decemberEvents){
             VEvent event = new VEvent();
             event.setSummary(wEvent.getEventName());
-            Date eventDate = new GregorianCalendar(2019,Calendar.DECEMBER, Integer.valueOf(wEvent.getEventDay())).getTime();
+            Date eventDate = new GregorianCalendar(actualDate.getYear(),month.getValue()-1, Integer.valueOf(wEvent.getEventDay())).getTime();
             event.setDateStart(eventDate);
             event.setDateEnd(eventDate);
             decemberCalendar.addEvent(event);
