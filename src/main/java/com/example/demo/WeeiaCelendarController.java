@@ -24,20 +24,18 @@ import java.util.*;
 @RequestMapping("/")
 public class WeeiaCelendarController {
 
-    @GetMapping("weeiaCalendar/november")
-    public ResponseEntity<Resource> generateNovemberCalendar() throws IOException {
-
-        ICalendar novemberCalendar = new ICalendar();
-
-        String november = "http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=2019&miesiac=11&lang=1";
-        String websiteContentNovember = getWebsiteHTML(november);
-
-        List<WeeiaEvent> novemberEvents = getWeeiaEvents(websiteContentNovember);
+    @GetMapping("weeiaCalendar/actualMonth")
+    public ResponseEntity<Resource> generateActualMonthCalendar() throws IOException {
 
         LocalDate actualDate = LocalDate.now();
         Month month = actualDate.getMonth();
 
+        ICalendar novemberCalendar = new ICalendar();
 
+        String november = "http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=" + actualDate.getYear() + "&miesiac=" + (month.getValue()-1) + "&lang=1";
+        String websiteContentNovember = getWebsiteHTML(november);
+
+        List<WeeiaEvent> novemberEvents = getWeeiaEvents(websiteContentNovember);
 
         for(WeeiaEvent wEvent: novemberEvents){
             VEvent event = new VEvent();
@@ -48,7 +46,7 @@ public class WeeiaCelendarController {
             novemberCalendar.addEvent(event);
         }
 
-        File calendarFile = new File("november.ics");
+        File calendarFile = new File("actualMonth.ics");
         Biweekly.write(novemberCalendar).go(calendarFile);
         Resource fileSystemResource = new FileSystemResource(calendarFile);
         return ResponseEntity.ok()
@@ -56,29 +54,29 @@ public class WeeiaCelendarController {
                 .body(fileSystemResource);
     }
 
-    @GetMapping("weeiaCalendar/december")
-    public ResponseEntity<Resource> generateDecemberCalendar() throws IOException {
-
-        ICalendar decemberCalendar = new ICalendar();
-
-        String december = "http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=2019&miesiac=12&lang=1";
-        String websiteContentDecember = getWebsiteHTML(december);
+    @GetMapping("weeiaCalendar/nextMonth")
+    public ResponseEntity<Resource> generateNextMonthCalendar() throws IOException {
 
         LocalDate actualDate = LocalDate.now();
         Month month = actualDate.getMonth();
+
+        ICalendar decemberCalendar = new ICalendar();
+
+        String december = "http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok="+ actualDate.getYear() +"&miesiac="+  month.getValue() +"&lang=1";
+        String websiteContentDecember = getWebsiteHTML(december);
 
         List<WeeiaEvent> decemberEvents = getWeeiaEvents(websiteContentDecember);
 
         for(WeeiaEvent wEvent: decemberEvents){
             VEvent event = new VEvent();
             event.setSummary(wEvent.getEventName());
-            Date eventDate = new GregorianCalendar(actualDate.getYear(),month.getValue()-1, Integer.valueOf(wEvent.getEventDay())).getTime();
+            Date eventDate = new GregorianCalendar(actualDate.getYear(),month.getValue(), Integer.valueOf(wEvent.getEventDay())).getTime();
             event.setDateStart(eventDate);
             event.setDateEnd(eventDate);
             decemberCalendar.addEvent(event);
         }
 
-        File calendarFile = new File("december.ics");
+        File calendarFile = new File("nextMonth.ics");
         Biweekly.write(decemberCalendar).go(calendarFile);
 
         Resource fileSystemResource = new FileSystemResource(calendarFile);
